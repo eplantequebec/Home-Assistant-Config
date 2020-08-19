@@ -1,0 +1,6 @@
+sudo docker stop home-assistant
+sudo docker pull homeassistant/home-assistant:latest
+sudo docker container rm "home-assistant"
+sudo docker run -d --network=host --restart=always --name home-assistant -v /volume1/Data/HA/:/config  homeassistant/home-assistant:latest
+
+

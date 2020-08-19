@@ -1,0 +1,683 @@
+# ------------------
+# ------------------
+# General config
+#
+
+lovelace:
+  mode: storage
+  dashboards:
+    tablette-yaml:
+      mode: yaml
+      title: Tablette
+      icon: mdi:tablet-android
+      show_in_sidebar: true
+      filename: dashboard-tablette.yaml
+frontend:
+  themes: !include_dir_merge_named themes
+config:
+homeassistant:
+  customize: !include customize.yaml
+http:
+  ssl_certificate: !secret ssl_certificate
+  ssl_key: !secret ssl_key
+  server_port: !secret port_ha
+discovery:
+  ignore:
+    - wink  # not in use for the moment
+
+# ------------------
+# Configuration for record/history/logging database
+#
+
+
+logger:
+  default: info
+logbook:
+recorder:
+  purge_keep_days: 30
+  db_url: !secret url_db
+
+
+# ------------------
+# Integrations without configuration
+#
+
+
+mobile_app:
+map:
+person:
+sun:
+system_health:
+updater:
+wake_on_lan:
+
+# ------------------
+# Integrations with config file in config folder
+#
+
+#in Root
+
+automation: !include automations.yaml
+script: !include scripts.yaml
+zone: !include zones.yaml
+cloud: 
+  google_actions:
+    entity_config:
+
+      # CHAMBRE
+      vacuum.aspirateur:
+        name: Aspirateur
+        room: Chambre
+      light.chambre_principal:
+        name: Lumière de la chambre 
+        room: Chambre
+      light.lit_deric:
+        name: Lumière d'Éric
+        room: Chambre
+      light.lit_dejulie:
+        name: Lumière de Julie
+        room: Chambre
+      switch.bruiteur:
+        name: Machine à bruit
+        room: Chambre
+      fan.fan_passage:
+         name: Fan du passage
+         room: Chambre
+
+      # CUISINE
+      light.lumiere_salle_a_manger:
+        name: Lumière de la salle à manger
+        room: Cuisine
+      light.cuisiniere:
+        name: Lumières de la cuisinière
+        room: Cuisine
+      light.comptoir:
+        name: Lumières du comptoir 
+        room: Cuisine
+
+      # SALON
+      light.lumiere_tv:
+        name: Lumière arrière TV
+        room: Salon
+      switch.climatiseur:
+        name: Air Climatisé
+        room: Salon
+      climate.thermostat_salon:
+        name: Thermostat Salon
+        room: Salon
+      lock.verrou:
+         name: Verrou Maison
+         room: Salon
+
+      # TOILETTE
+      light.lumiere_toilette_principale:
+        name: Lumière Toilette
+        room: Toilette
+      light.lumiere_toilette_cabinet:
+        name: Lumière Cabinet Toilette
+        room: Toilette
+      climate.thermostat_toilette:
+        name: Thermostat Toilette
+        room: Toilette
+
+      # BUREAU
+      light.lumiere_bureau_principale:
+        name: Lumière Principale
+        room: Bureau
+      light.lumiere_bureau_julie:
+        name: lumière du bureau de Julie
+        room: Bureau
+      climate.thermostat_bureau:
+        name: Thermostat Bureau
+        room: Bureau      
+      camera.ezviz_camera:
+        name: Caméra Bureau
+        room: Bureau      
+
+homekit: 
+  filter:
+    include_entities:
+      - switch.climatiseur
+      - switch.bruiteur
+      - light.comptoir_four
+      - light.comptoir_evier
+      - light.cuisiniere_droit
+      - light.cuisiniere_gauche
+      - light.chambre_principal
+      - light.lit_deric
+      - light.garderobe
+      - switch.lumiere_tv
+      - switch.lumiere_toilette_plafond
+      - switch.lumiere_toilette_cabinet
+      - switch.lumieres_toilette
+      - light.lumiere_salle_a_manger
+      - climate.thermostat_toilette
+      - climate.thermostat_bureau
+      - climate.thermostat_salon
+      - cover.porte_de_garage
+      - lock.porte_entree
+  entity_config:
+    light.comptoir_four:
+      name: LED Comptoir (Four)
+    light.comptoir_evier:
+      name: LED Comptoir (Évier)
+    
+
+# ------------------
+# Integrations with small config
+#
+
+cover:
+  - platform: myq
+    username: !secret myq_username
+    password: !secret myq_password
+    type: chamberlain
+
+hue:
+  bridges:
+    - host: !secret ip_hue
+      allow_unreachable: true
+      allow_hue_groups: false
+    
+neviweb:
+  username: !secret sinope_username
+  password: !secret sinope_password
+  network: MaisonJulie
+
+
+proximity:
+  home:
+    devices:
+      - device_tracker.iphone_de_julie
+      - device_tracker.iphone_xs_de_eric
+    tolerance: 100
+        
+tts:
+  - platform: google_translate
+    service_name: google_say
+    language: 'fr'
+    cache: false
+
+vacuum:
+ - platform: xiaomi_miio
+   name: Aspirateur
+   host: !secret ip_vacuum_xiaomi
+   token: !secret xiaomi_token 
+
+weather:
+  - platform: openweathermap
+    api_key: 08ed4c8cc56fcb809a13410501af7df5
+    mode: freedaily
+
+#tuya:
+#  username: !secret tuya_username
+#  password: !secret tuya_password
+#  country_code: 1
+
+shell_command:
+  wksjulie_dodo: 'curl -k http://wksjulie.plante.ca:8888/index.html?dodo'
+  wkseric_dodo: 'curl -k http://wksepl10.plante.ca:8888/index.html?dodo'
+
+withings:
+  client_id: !secret withings_id
+  client_secret: !secret withings_secret
+
+
+################
+##
+## BINARY_SENDOR
+##
+#################
+
+binary_sensor:
+    - platform: ping
+      host: !secret ip_kodi
+      count: 2
+      scan_interval: 10
+      name: Ping Kodi
+    - platform: ping
+      host: !secret ip_dvd
+      count: 2
+      scan_interval: 10
+      name: DVD Salon
+    - platform: ping
+      host: !secret ip_tv
+      count: 2
+      scan_interval: 10
+      name: Ping TV
+    - platform: template
+      sensors:
+        safe_departure:
+          friendly_name: "Départ Sécuritaire"
+          value_template: >-
+            {{ is_state('binary_sensor.porte_patio', 'off') and is_state('binary_sensor.porte_arriere', 'off') }}
+
+################
+##
+## GROUPS
+##
+#################
+
+group:
+    alarmclock:
+      name: Wake Me Up
+      entities: 
+        - sensor.alarm_time
+        - input_number.alarmhour
+        - input_number.alarmminutes
+        - input_boolean.alarmweekday
+        - input_boolean.alarmweekon
+      
+    Cuisine:
+      name: Lumières de la cuisine
+      entities:
+        - light.cuisiniere_droit
+        - light.cuisiniere_gauche
+        - group.comptoir
+
+    Chambre:
+      name: Lumières de la Chambre
+      entities:
+        - light.chambre_principal
+        - light.lit_deric
+    
+    Comptoir:
+      name: LED du comptoir
+      entities:
+        - light.comptoir_four
+        - light.comptoir_evier
+
+    lumieres_dodo_depart:
+      name: Lumière à fermer pour dodo
+      entities:
+        - light.lumiere_bureau_julie
+        - light.lumiere_bureau_principale
+        - light.lit_deric
+        - light.lit_dejulie
+        - light.garderobe
+        - light.chambre_principal
+        - light.comptoir_four
+        - light.comptoir_evier
+        - light.cuisiniere
+        - light.cuisiniere_gauche
+        - light.lumiere_salle_a_manger
+        - light.lumiere_tv
+        - light.lumiere_toilette_principale
+        - light.lumiere_toilette_cabinet
+
+################
+##
+## GROUPS
+##
+#################
+
+history:
+  use_include_order: true
+  include:
+    domains:
+      - automation
+      - binary_sensor
+      - fan
+      - input_boolean
+      - input_number
+      - light
+      - sensor
+      - switch      
+      
+################
+##
+## input_boolean
+##
+#################
+
+input_boolean:
+  alarmweekday:
+    name: Les jours de la semaine 
+    icon: mdi:calendar
+  alarmweekon:
+    name: Actif     
+  eric_in_bed:
+    name: Eric est au lit
+    icon: mdi:bed
+  julie_in_bed:
+    name: Julie est au lit
+    icon: mdi:bed
+
+################
+##
+## input_numbers
+##
+#################
+
+input_number: 
+  alarmhour:
+    name: Heure
+    icon: mdi:timer
+    initial: 6
+    min: 0
+    max: 23
+    step: 1
+  alarmminutes:
+    name: Minutes
+    icon: mdi:timer
+    initial: 00
+    min: 0
+    max: 59
+    step: 5
+      
+
+################
+##
+## input_numbers
+##
+#################
+
+input_select: 
+  climatiseurmode:
+    name: Mode du climatiseur
+    options:
+      - Fermé
+      - Auto
+      - Refroidissement
+      - Économie d'énergie
+      - Ventilateur
+      - Déshumidificateur
+    icon: mdi:air-conditioner
+  
+################
+##
+## light
+##
+#################
+
+light:
+  - platform: flux_led
+    devices:
+      10.0.0.80:
+        name: Comptoir (Four)
+      #10.0.0.82:
+        #name: Portique
+      10.0.0.90:
+        name: Comptoir (Évier)
+  - platform: switch
+    name: Lumière Bureau Julie
+    entity_id: switch.lumiere_julie
+  - platform: switch
+    name: Lumière Bureau Principale
+    entity_id: switch.lumiere_du_bureau
+  - platform: switch
+    name: Lumière Toilette Principale
+    entity_id: switch.lumiere_toilette_plafond
+  - platform: switch
+    name: Lumière Toilette Cabinet
+    entity_id: switch.lumiere_toilette_cabinet
+  - platform: switch
+    name: Lumière TV
+    entity_id: switch.lumiere_tv
+  - platform: group
+    name: Cuisinière
+    entities:
+      - light.cuisiniere_droit
+      - light.cuisiniere_gauche
+  - platform: group
+    name: Comptoir
+    entities:
+      - light.comptoir_four
+      - light.comptoir_evier
+     
+
+
+################
+##
+## media_players
+##
+#################
+
+media_player:
+  - platform: kodi
+    host: !secret ip_kodi
+    username: !secret kodi_username
+    password: !secret kodi_password
+
+  - platform: androidtv
+    name: Shield TV
+    device_class: androidtv
+    host: 10.0.0.20
+    apps:
+       com.plexapp.android: "PLEX"
+       org.xbmc.kodi: "KODI"
+       com.google.android.youtube.tv: "YOUTUBE"
+       com.amazon.amazonvideo.livingroom: "Amazon Video"
+    exclude_unnamed_apps: true
+    state_detection_rules:
+      'com.plexapp.android':
+        - 'paused':
+            'media_session_state': 3  # this indentation is important!
+            'wake_lock_size': 1       # this indentation is important!
+        - 'playing':
+            'media_session_state': 3  # this indentation is important!
+        - 'standby'
+      
+    
+
+################
+##
+## sensors
+##
+#################
+
+sensor: 
+  - platform: time_date
+    display_options:
+      - 'time_date'
+      - 'time_utc'
+
+  - platform: template
+    sensors:
+      fan_status:
+        friendly_name: 'État FAN'
+        value_template: '{% if (state_attr("switch.prise_passage","current_power_w") | float) < 1 %}
+               off
+             {% elif (state_attr("switch.prise_passage","current_power_w") | float) < 30 %}
+               low
+             {% elif (state_attr("switch.prise_passage","current_power_w") | float) < 40 %}
+               medium
+             {% else %}
+               high
+             {% endif %}'
+      alarm_time:
+        friendly_name: 'Time'
+        value_template: '{{ "%0.02d:%0.02d" | format(states("input_number.alarmhour") | int, states("input_number.alarmminutes") | int) }}'
+      eric_maison:
+        friendly_name: 'Éric à la maison'
+        value_template: '{{ states("person.eric") | regex_search("^maison|^bureau|^chambre|^salon|^Present|^Présent|^home|^portique", ignorecase=True)   }}'
+      julie_maison:
+        friendly_name: 'Julie à la maison'
+        value_template: '{{ states("person.julie") | regex_search("^maison|^bureau|^chambre|^salon|^Present|^Présent|^home|^portique", ignorecase=True)  }}'
+      quelqun_maison:
+        friendly_name: 'Quelqu''un à la maison'
+        value_template: '{{ is_state("sensor.eric_maison", "True") or is_state("sensor.julie_maison", "True") }}'
+      switch2_amps:
+        friendly_name: "Air Climatisé: Current"
+        value_template: '{{ state_attr("switch.switch2", "current_a") | float }}'
+        unit_of_measurement: 'A'
+      switch2_watts:
+        friendly_name: "Air Climatisé: Consommation courante"
+        value_template: '{{ state_attr("switch.switch2", "current_power_w") | float }}'
+        unit_of_measurement: 'W'
+      switch2_total_kwh:
+        friendly_name: "Air Climatisé: Consommation totale"
+        value_template: '{{ state_attr("switch.switch2", "total_energy_kwh") | float }}'
+        unit_of_measurement: 'kWh'
+      switch2_volts:
+        friendly_name: "Air Climatisé: Voltage"
+        value_template: '{{ state_attr("switch.switch2", "voltage") | float }}'
+        unit_of_measurement: 'V'
+      switch2_today_kwh:
+        friendly_name: "Air Climatisé: Consommation quotidienne"
+        value_template: '{{ state_attr("switch.switch2", "today_energy_kwh") | float }}'
+        unit_of_measurement: 'kWh'
+      vacuum_battery:
+        friendly_name: "Aspirateur - Batterie"
+        value_template: "{{ state_attr('vacuum.aspirateur', 'battery_level') }}"
+        device_class: battery
+        unit_of_measurement: '%'
+      temperature_salon:
+        friendly_name: "Salon - Température"
+        device_class: battery
+        unit_of_measurement: 'C'
+        value_template: "{{ state_attr('climate.thermostat_salon','current_temperature') }}"
+      temperature_cuisine:
+        friendly_name: "Cuisine - Température"
+        device_class: battery
+        unit_of_measurement: 'C'
+        value_template: "{{ states('sensor.senseur_cuisine_temperature') }}"
+      temperature_toilette:
+        friendly_name: "Toilette - Température"
+        device_class: battery
+        unit_of_measurement: 'C'
+        value_template: "{{ state_attr('climate.thermostat_toilette','current_temperature') }}"
+      temperature_bureau:
+        friendly_name: "Bureau - Température"
+        device_class: battery
+        unit_of_measurement: 'C'
+        value_template: "{{ state_attr('climate.thermostat_bureau','current_temperature') }}"
+      temperature_chambre:
+        friendly_name: "Chambre - Température"
+        device_class: battery
+        unit_of_measurement: 'C'
+        value_template: "{{ states('sensor.senseur_chambre_temperature') }}"
+      humidite_cuisine:
+        friendly_name: "Cuisine - Humidité"
+        device_class: battery
+        unit_of_measurement: '%'
+        value_template: "{{ states('sensor.senseur_cuisine_humidity') }}"
+      humidite_chambre:
+        friendly_name: "Chambre - Humidité"
+        device_class: battery
+        unit_of_measurement: '%'
+        value_template: "{{ states('sensor.senseur_chambre_humidity') }}"
+
+  - platform: environment_canada
+    language: french
+
+  - platform: deluge
+    host: !secret ip_deluge
+    username: !secret deluge_username
+    password: !secret deluge_password
+    monitored_variables:
+      - 'current_status'
+      - 'download_speed'
+      - 'upload_speed'
+
+  - platform: broadlink
+    scan_interval: 60
+    host: !secret ip_broadlink_sensor_chambre
+    mac: !secret mac_broadlink_sensor_chambre
+    name: 'Senseur Chambre'
+    monitored_conditions:
+      - temperature
+      - humidity
+      - air_quality
+      - light
+      - noise
+
+  - platform: broadlink
+    scan_interval: 60
+    host: !secret ip_broadlink_sensor_cuisine
+    mac: !secret mac_broadlink_sensor_cuisine
+    name: 'Senseur Cuisine'
+    monitored_conditions:
+      - temperature
+      - humidity
+      - air_quality
+      - light
+      - noise
+
+
+################
+##
+## FANS
+##
+#################
+
+fan:
+  - platform: template
+    fans:
+      fan_passage:
+        friendly_name: "Fan du passage"
+        value_template: '{% if (states.switch.prise_passage.attributes["current_power_w"]) < 1 %}
+               off
+             {% else %}
+               on
+             {% endif %}'
+        speed_template: ' {% if (states.switch.prise_passage.attributes["current_power_w"]) < 5 %}
+               off
+             {% elif (states.switch.prise_passage.attributes["current_power_w"]) < 30 %}
+               low
+             {% elif (states.switch.prise_passage.attributes["current_power_w"]) < 40 %}
+               medium
+             {% else %}
+               high
+             {% endif %} '
+        speeds:
+          - 'off'
+          - 'low'
+          - 'medium'
+          - 'high'
+        turn_on:
+          service: script.set_fan_portique_on
+        turn_off:
+          service: script.set_fan_portique_off
+        set_speed:
+            service: script.set_fan_portique_speed
+            data_template:
+              speed: "{{ speed }}"
+
+        
+################
+##
+## switchs
+##
+#################
+
+switch:
+  - platform: broadlink
+    scan_interval: 120
+    host: !secret ip_broadlink_ir1
+    mac: !secret mac_broadlink_ir1
+    timeout: 15
+    switches:
+      climatiseur_ir:
+        friendly_name: "Air Climatisé"
+        command_on: !secret ir_cmd_ac_open
+        command_off: !secret ir_cmd_ac_close
+
+  - platform: broadlink
+    scan_interval: 120
+    host: !secret ip_broadlink_ir2
+    mac: !secret mac_broadlink_ir2
+    timeout: 15
+    switches:
+      climatiseur:
+        friendly_name: "Fan"
+        command_on: !secret ir_fan_ac_onOff
+        command_off: !secret ir_fan_ac_onOff
+
+  - platform: deluge
+    host: !secret ip_deluge
+    username : !secret deluge_username
+    password : !secret deluge_password
+
+camera:
+  - platform: ezviz
+    username: !secret ezviv_username
+    password: !secret ezviv_password
+    cameras:
+      D69217120:
+        username: admin
+        password: TFMXVZ
+  - platform: ffmpeg
+    name: Ezviz Camera
+    input: -rtsp_transport tcp -i rtsp://admin:TFMXVZ@10.0.0.115/h264_stream:554
+

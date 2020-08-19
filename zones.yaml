@@ -1,0 +1,26 @@
+  - name: portique
+    latitude: !secret lat_portique
+    longitude: !secret lon_portique
+    radius: 1
+
+  - name: cuisine
+    latitude: !secret lat_cuisine
+    longitude: !secret lon_cuisine
+    radius: 1
+    passive: true
+
+  - name: chambre
+    latitude: !secret lat_chambre
+    longitude: !secret lon_chambre
+    radius: 1
+
+  - name: bureau
+    latitude: !secret lat_bureau
+    longitude: !secret lon_bureau
+    radius: 1
+
+  - name: auto
+    latitude: !secret lat_auto
+    longitude: !secret lon_auto
+    radius: 1
+    passive: true

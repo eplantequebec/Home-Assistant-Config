@@ -1,0 +1,8 @@
+{
+  "domain": "sinope",
+  "name": "Sinope GT125",
+  "documentation": "https://github.com/claudegel/sinope-gt125",
+  "dependencies": [],
+  "codeowners": ["@claudegel"],
+  "requirements": ["crc8==0.0.5"]
+}

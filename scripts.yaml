@@ -1,0 +1,342 @@
+dodo:
+  alias: Préparer le dodo
+  sequence:
+  - data:
+      entity_id: media_player.google_home_chambre
+      volume_level: 0.3
+    service: media_player.volume_set
+  - data_template:
+      entity_id: media_player.google_home_chambre
+      message: Je prépare.
+    service: tts.google_say
+  - data:
+      entity_id:
+      - group.lumieres_dodo_depart
+    service: homeassistant.turn_off
+  - service: script.send_ac_command_auto
+  - service: shell_command.wksjulie_dodo
+  - service: script.ferme_appareils
+  - service: fan.set_speed
+    data:
+      entity_id: fan.fan_passage
+      speed: medium
+  - entity_id: lock.porte_entree
+    service: lock.lock
+  - delay: 00:00:01
+  - entity_id: switch.bruiteur
+    service: switch.turn_on
+  - data:
+      entity_id: media_player.google_home_chambre
+      volume_level: 0.3
+    service: media_player.volume_set
+  - data_template:
+      entity_id: media_player.google_home_chambre
+      message: "{% if is_state('binary_sensor.porte_patio', 'on') and is_state('binary_sensor.porte_patio_mousticaire',\
+        \ 'on') %}  \n  Attention!  Les portes du patio sembles ouvertes.  \n{% else\
+        \ %}\n   Beau dodo.\n{% endif %}   \n"
+    service: tts.google_say
+depart:
+  alias: Préparer le départ
+  sequence:
+  - service: media_player.volume_set
+    data:
+      entity_id: media_player.google_home_cuisine
+      volume_level: 0.5
+  - service: tts.google_say
+    data_template:
+      entity_id: media_player.google_home_cuisine
+      message: "{% if is_state('binary_sensor.porte_patio', 'on') %}  \n  Attention!\
+        \  La porte patio semble ouverte.  \n{% else %}\n  Delais démarré.\n{% endif\
+        \ %}   \n"
+  - service: script.turn_on
+    entity_id: script.ferme_appareils
+  - delay: 00:00:10
+  - service: input_select.select_option
+    data:
+      entity_id: input_select.climatiseur_mode
+      option: Économie d'énergie
+  - service: lock.lock
+    entity_id: lock.porte_entree
+  - data:
+      entity_id:
+      - group.lumieres_dodo_depart
+    service: homeassistant.turn_off
+wakeup_call:
+  alias: Wakeup Script
+  sequence:
+  - data:
+      entity_id: media_player.google_home_chambre
+    service: media_player.turn_on
+  - data_template:
+      entity_id: media_player.google_home_chambre
+      volume_level: '0.3'
+    service: media_player.volume_set
+  - data_template:
+      entity_id: media_player.google_home_chambre
+      message: Bon matin Éric. il est {{now().hour}} heure et {{now().minute}}.  La
+        température extérieur est de {{ states('sensor.temperature')|int }} degré.  La
+        météo annonce, {{ states('sensor.forecast') }}.
+    service: tts.google_say
+  - delay: 00:09:00
+  - entity_id: script.loop_wakeup_call
+    service: script.turn_on
+loop_wakeup_call:
+  alias: Goto Wakeup Script
+  sequence:
+  - delay: 00:00:05
+  - condition: state
+    entity_id: input_boolean.eric_in_bed
+    state: 'on'
+  - entity_id: script.wakeup_call
+    service: script.turn_on
+demarre_kodi:
+  alias: Démarre Kodi
+  sequence:
+  - service: script.turn_tv_on
+  - delay: 00:00:01
+  - service: broadlink.send
+    data:
+      host: !secret ip_broadlink_ir1
+      packet:
+      - !secret ir_tv_hdmi3
+  - service: broadlink.send
+    data:
+      host: !secret ip_broadlink_ir1
+      packet:
+      - !secret ir_hdmi_switch1_a1
+demarre_retropie:
+  alias: Démarre Retropie
+  sequence:
+  - service: script.turn_tv_on
+  - delay: 00:00:01
+  - service: media_player.select_source
+    data:
+      entity_id: media_player.shield_tv
+      source: org.xbmc.kodi      
+  - service: broadlink.send
+    data:
+      host: !secret ip_broadlink_ir1
+      packet:
+      - !secret ir_tv_hdmi3
+  - service: broadlink.send
+    data:
+      host: !secret ip_broadlink_ir1
+      packet:
+      - !secret ir_hdmi_switch1_a2
+demarre_plex:
+  alias: Démarre Plex
+  sequence:
+  - service: script.turn_tv_on
+  - delay: 00:00:01
+  - service: media_player.select_source
+    data:
+      entity_id: media_player.shield_tv
+      source: com.plexapp.android      
+  - service: broadlink.send
+    data:
+      host: !secret ip_broadlink_ir1
+      packet:
+      - !secret ir_tv_hdmi3
+demarre_youtube:
+  alias: Démarre Youtube
+  sequence:
+  - service: script.turn_tv_on
+  - delay: 00:00:01
+  - service: media_player.select_source
+    data:
+      entity_id: media_player.shield_tv
+      source: com.google.android.youtube.tv      
+  - service: broadlink.send
+    data:
+      host: !secret ip_broadlink_ir1
+      packet:
+      - !secret ir_tv_hdmi3
+demarre_shield:
+  alias: Démarre Shield
+  sequence:
+  - service: script.turn_tv_on
+  - delay: 00:00:01
+  - service: media_player.select_source
+    data:
+      entity_id: media_player.shield_tv
+      source: com.google.android.youtube.tv      
+  - service: broadlink.send
+    data:
+      host: !secret ip_broadlink_ir1
+      packet:
+      - !secret ir_tv_hdmi3
+demarre_illico:
+  alias: Démarre Illico
+  sequence:
+  - service: script.turn_tv_on
+  - delay: 00:00:01
+  - service: broadlink.send
+    data:
+      host: !secret ip_broadlink_ir1
+      packet:
+      - !secret ir_tv_hdmi1
+demarre_appletv:
+  alias: Démarre Apple TV
+  sequence:
+  - service: script.turn_tv_on
+  - delay: 00:00:01
+  - service: broadlink.send
+    data:
+      host: !secret ip_broadlink_ir1
+      packet:
+      - !secret ir_tv_hdmi2
+ferme_appareils:
+  alias: Fermes les appareils vidéos
+  sequence:
+  - service: script.turn_tv_off
+send_ac_command_auto:
+  sequence:
+  - service: script.send_ac_command_on
+  - service: broadlink.send
+    data:
+      host: !secret ip_broadlink_ir1
+      packet:
+      - !secret ir_cmd_ac_auto
+send_ac_command_refroidissement:
+  sequence:
+  - condition: state
+    entity_id: binary_sensor.safe_departure
+    state: 'on'
+  - service: script.send_ac_command_on
+  - service: broadlink.send
+    data:
+      host: !secret ip_broadlink_ir1
+      packet:
+      - !secret ir_cmd_ac_refroidissement
+send_ac_command_economie:
+  sequence:
+  - condition: state
+    entity_id: binary_sensor.safe_departure
+    state: 'on'
+  - service: broadlink.send
+    data:
+      host: !secret ip_broadlink_ir1
+      packet:
+      - !secret ir_cmd_ac_economie
+send_ac_command_ventilateur:
+  sequence:
+  - service: script.send_ac_command_on
+  - service: broadlink.send
+    data:
+      host: !secret ip_broadlink_ir1
+      packet:
+      - !secret ir_cmd_ac_ventilateur
+send_ac_command_deshumidificateur:
+  sequence:
+  - condition: state
+    entity_id: binary_sensor.safe_departure
+    state: 'on'
+  - service: script.send_ac_command_on
+  - service: broadlink.send
+    data:
+      host: !secret ip_broadlink_ir1
+      packet:
+      - !secret ir_cmd_ac_deshumidificateur
+send_ac_command_off:
+  sequence:
+  - service: broadlink.send
+    data:
+      host: !secret ip_broadlink_ir1
+      packet:
+      - !secret ir_cmd_ac_close
+send_ac_command_on:
+  sequence:
+  - condition: state
+    entity_id: binary_sensor.safe_departure
+    state: 'on'
+  - service: broadlink.send
+    data:
+      host: !secret ip_broadlink_ir1
+      packet:
+      - !secret ir_cmd_ac_open
+send_ac_command_toggle:
+  sequence:
+  - service_template: "{% if states('sensor.ac_on') == \"off\" %}\n  script.send_ac_command_on\n\
+      {% else %}\n  script.send_ac_command_off\n{% endif %}\n"
+send_fan_change_power:
+  sequence:
+  - service: broadlink.send
+    data:
+      host: !secret ip_broadlink_ir2
+      packet:
+      - !secret ir_fan_ac_power
+wol_wkseplante:
+  sequence:
+  - service: wake_on_lan.send_magic_packet
+    data:
+      mac: D8:CB:8A:35:AC:45
+set_fan_portique_on:
+  sequence:
+    - condition: state
+      entity_id: fan.fan_passage
+      state: 'off'
+    - service: broadlink.send
+      data:
+        host: !secret ip_broadlink_ir2
+        packet:
+        - !secret ir_fan_ac_onOff
+    - delay: '00:00:01' 
+set_fan_portique_off:
+  sequence:
+    - condition: state
+      entity_id: fan.fan_passage
+      state: 'on'
+    - service: broadlink.send
+      data:
+        host: !secret ip_broadlink_ir2
+        packet:
+        - !secret ir_fan_ac_onOff
+set_fan_portique_speed:
+  sequence:
+    - service: script.set_fan_portique_on
+    - service_template: >
+        {% set goal_speed_att = speed %}
+        {% set temp = {'off': 1, 'low': 1, 'medium': 2, 'high': 3} %}
+        {% set goal_speed = temp[goal_speed_att] %}
+        {% set actual_speed = temp[state_attr("fan.fan_passage", "speed")] %} 
+        {% set needed = (0 - actual_speed + goal_speed + 3) % 3 %}
+        script.speedup_fan_portique_{{ needed }}
+speedup_fan_portique_0:
+  sequence:
+    - delay: '00:00:01' 
+speedup_fan_portique_1:
+  sequence:
+    - service: script.send_fan_change_power
+speedup_fan_portique_2:
+  sequence:
+    - service: script.send_fan_change_power
+    - service: script.send_fan_change_power
+turn_tv_on:
+  sequence:
+  - service: broadlink.send
+    data:
+      host: !secret ip_broadlink_ir1
+      packet:
+      - !secret ir_tv_on
+turn_tv_off:
+  sequence:
+  - service: broadlink.send
+    data:
+      host: !secret ip_broadlink_ir1
+      packet:
+      - !secret ir_tv_off
+switch_a1:
+  sequence:
+  - service: broadlink.send
+    data:
+      host: !secret ip_broadlink_ir1
+      packet:
+      - !secret ir_hdmi_switch1_a1
+switch_a2:
+  sequence:
+  - service: broadlink.send
+    data:
+      host: !secret ip_broadlink_ir1
+      packet:
+      - !secret ir_hdmi_switch1_a2
+

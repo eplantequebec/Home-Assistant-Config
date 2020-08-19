@@ -1,0 +1,67 @@
+sensor.julie_maison:
+  icon: mdi:human-female
+sensor.eric_maison:
+  icon: mdi:human-male
+climate.neviweb_climate_salon:
+  friendly_name: Thermostat Salon
+  icon: mdi:thermometer
+climate.neviweb_climate_ordinateurs:
+  friendly_name: Thermostat Ordinateurs
+  icon: mdi:thermometer
+climate.neviweb_climate_toilette:
+  friendly_name: Thermostat Toilette
+  icon: mdi:thermometer
+sensor.senseur_chambre_air_quality:
+  icon: mdi:weather-windy
+sensor.senseur_cuisine_air_quality:
+  icon: mdi:weather-windy
+sensor.senseur_chambre_humidity:
+  friendly_name: 'Senseur Chambre: Humidité'
+  icon: mdi:water
+sensor.senseur_cuisine_humidity:
+  icon: mdi:water
+sensor.senseur_cuisine_light:
+  icon: mdi:lightbulb-on-outline
+sensor.senseur_chambre_light:
+  icon: mdi:lightbulb-on-outline
+sensor.senseur_cuisine_noise:
+  icon: mdi:surround-sound
+zone.portique:
+  track_ios: true
+  beacon:
+    uuid: 9C3DB60A-14DC-D5E8-E319-5714D1823D11
+zone.cuisine:
+  track_ios: true
+  beacon:
+    uuid: 9C3DB60A-14DC-D5E8-E319-5714D1823D12
+zone.chambre:
+  track_ios: true
+  beacon:
+    uuid: 9C3DB60A-14DC-D5E8-E319-5714D1823D13
+zone.bureau:
+  track_ios: true
+  beacon:
+    uuid: 9C3DB60A-14DC-D5E8-E319-5714D1823D14
+zone.auto:
+  track_ios: true
+  beacon:
+    uuid: 9C3DB60A-14DC-D5E8-E319-5714D1823D21
+light.comptoir_evier:
+  friendly_name: Comptoir (Évier)
+sensor.senseur_chambre_temperature:
+  friendly_name: 'Senseur Chambre: Température'
+climate.neviweb_climate_ordinateurs_2:
+  friendly_name: Thermostat Bureau
+light.hue_white_lamp_1:
+  entity_id: garderobe
+  friendly_name: Garde-robe Julie
+binary_sensor.porte_arriere:
+  device_class: door
+binary_sensor.porte_patio_mousticaire:
+  device_class: door
+binary_sensor.porte_patio:
+  device_class: door
+binary_sensor.porte_entree:
+  device_class: door
+switch.lumiere_julie:
+  device_class: outlet

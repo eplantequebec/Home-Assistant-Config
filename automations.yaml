@@ -1,0 +1,300 @@
+- alias: Eteindre le hub de la chambre
+  trigger:
+    platform: state
+    entity_id: media_player.hub_chambre
+    from: playing
+    to: idle
+    for: 00:00:05
+  action:
+  - service: media_player.turn_off
+    entity_id: media_player.bureau
+  id: 042c1d63a895483899bfdb415d6e03a5
+- id: MaximizeSalleAManger
+  alias: maximise la lumière salle à manger
+  trigger:
+    platform: numeric_state
+    entity_id: light.lumiere_salle_a_manger
+    value_template: '{{ state.attributes.brightness }}'
+    above: 229
+  action:
+  - service: light.turn_on
+    entity_id: light.lumiere_salle_a_manger
+    data_template:
+      brightness: '229'
+- id: ferme_switch2
+  alias: Ferme le bruiteur
+  trigger:
+    platform: time_pattern
+    hours: '8'
+    minutes: 0
+    seconds: 0
+  action:
+  - service: switch.turn_off
+    entity_id: switch.bruiteur
+- id: wakeup
+  alias: Réveil-matin
+  trigger:
+    platform: time_pattern
+    minutes: /5
+    seconds: 2
+  condition:
+  - condition: template
+    value_template: '{{ now().hour == (states.input_number.alarmhour.state  | round(0))  and  now().minute
+      == (states.input_number.alarmminutes.state  | round(0) )  }}'
+  - condition: state
+    entity_id: input_boolean.alarmweekon
+    state: 'on'
+  - condition: state
+    entity_id: input_boolean.alarmweekday
+    state: 'on'
+  - condition: time
+    weekday:
+    - mon
+    - tue
+    - wed
+    - thu
+    - fri
+  action:
+  - service: script.turn_on
+    entity_id: script.wakeup_call
+- id: eric_se_leve_annule_wakeup
+  alias: Éric se lève (Annuler le réveil Google)
+  trigger:
+  - entity_id: input_boolean.eric_in_bed
+    from: 'on'
+    platform: state
+    to: 'off'
+  action:
+  - entity_id: script.wakeup_call
+    service: script.turn_off
+  - entity_id: script.wakeup_call
+    service: script.turn_off
+- id: automate_ifttt
+  alias: IFTTT Trigger
+  trigger:
+  - event_data:
+      action: call_service
+    event_type: ifttt_webhook_received
+    platform: event
+  action:
+  - data_template:
+      entity_id: '{{ trigger.event.data.entity_id }}'
+    service_template: '{{ trigger.event.data.service }}'
+- id: notifie_absence_eric
+  alias: Alerte d'absence à la maison
+  trigger:
+  - entity_id: sensor.quelqun_maison
+    for:
+      minutes: 15
+    platform: state
+    to: 'False'
+  action:
+  - data:
+      data:
+        action_data:
+          entity_id: switch.lumiere_julie
+        push:
+          badge: 0
+          category: absence
+      message: Absence de la maison détecté!
+      title: Alerte Home Assistant
+    service: notify.ios_iphonedeeric
+- id: '1559093919638'
+  alias: Desactive Hub
+  trigger:
+  - entity_id: media_player.hub_chambre
+    for: 00:00:05
+    from: playing
+    platform: state
+    to: idle
+  condition: []
+  action:
+  - data:
+      entity_id: media_player.hub_chambre
+    service: media_player.turn_off
+- id: smartcomptoir
+  alias: Smartbutton - Allume Comptoir
+  trigger:
+    platform: event
+    event_type: smartthings.button
+    event_data:
+      device_id: 0b682d1b-d55d-4435-959b-e4ef24142fb7
+      value: double
+  action:
+  - service: light.toggle
+    data:
+      entity_id: group.comptoir
+      rgb_color:
+      - 255
+      - 255
+      - 100
+- id: smartcuisiniere
+  alias: Smartbutton - Allume Cuisinière
+  trigger:
+    platform: event
+    event_type: smartthings.button
+    event_data:
+      device_id: 0b682d1b-d55d-4435-959b-e4ef24142fb7
+      value: pushed
+  action:
+  - service: light.toggle
+    data:
+      entity_id: group.cuisiniere
+- id: smartbutton_salon
+  alias: Smartbutton - Salon - Départ
+  trigger:
+  - event_data:
+      device_id: 8e400629-472c-47f6-8747-9a5de52947b6
+      value: held
+    event_type: smartthings.button
+    platform: event
+  action:
+  - service: script.depart
+- id: smartbutton_chambre_eric
+  alias: Smartbutton - Dodo - Éric (Long)
+  trigger:
+  - event_data:
+      device_id: ce6c07cb-971a-4987-ba77-6e596b8e0eba
+      value: held
+    event_type: smartthings.button
+    platform: event
+  action:
+  - service: script.dodo
+- id: smartbutton_chambre_eric_single
+  alias: Smartbutton - Dodo - Éric (Court)
+  trigger:
+  - event_data:
+      device_id: ce6c07cb-971a-4987-ba77-6e596b8e0eba
+      value: pushed
+    event_type: smartthings.button
+    platform: event
+  action:
+  - data:
+      entity_id: switch.bruiteur
+    service: switch.toggle
+- id: smartbutton_chambre_julie
+  alias: Smartbutton - Dodo - Julie
+  trigger:
+    platform: event
+    event_type: smartthings.button
+    event_data:
+      device_id: 8a238d07-8843-4d87-87b8-5b243530d5be
+      value: held
+  action:
+  - service: script.dodo
+- id: ios_action_prepare_dodo
+  alias: Prépare le dodo (via IOS)
+  initial_state: true
+  trigger:
+  - platform: event
+    event_type: ios.action_fired
+    event_data:
+      actionName: prepare_dodo
+  action:
+  - service: script.dodo
+- id: ios_action_prepare_départ
+  alias: Prépare le départ (via IOS)
+  initial_state: true
+  trigger:
+  - platform: event
+    event_type: ios.action_fired
+    event_data:
+      actionName: prepare_depart
+  action:
+  - service: script.depart
+- id: ios_action_barre_porte
+  alias: Barre la porte (via IOS)
+  initial_state: true
+  trigger:
+  - platform: event
+    event_type: ios.action_fired
+    event_data:
+      actionName: barre_porte
+  action:
+  - service: lock.lock
+    entity_id: lock.porte_entree
+- id: '1572654194960'
+  alias: Allume Bureau sur mouvement
+  description: ''
+  trigger:
+  - entity_id: binary_sensor.hue_motion_sensor_bureau
+    from: 'off'
+    platform: state
+    to: 'on'
+  condition: []
+  action:
+  - data: {}
+    entity_id: light.lumiere_bureau_julie
+    service: light.turn_on
+  - data: {}
+    entity_id: light.lumiere_bureau_principale
+    service: light.turn_on
+  - delay: 00:20:00
+  - data: {}
+    entity_id: light.lumiere_bureau_julie
+    service: light.turn_off
+  - data: {}
+    entity_id: light.lumiere_bureau_principale
+    service: light.turn_off
+  mode: restart
+- id: '1573171821139'
+  alias: 'Allume salle à manger quand on entre '
+  description: ''
+  trigger:
+  - entity_id: binary_sensor.porte_entree
+    platform: state
+    to: 'on'
+  condition:
+  - condition: state
+    entity_id: sun.sun
+    state: below_horizon
+  action:
+  - device_id: ea944d9cf3614b318036f3ed16df5276
+    domain: light
+    entity_id: light.lumiere_salle_a_manger
+    type: turn_on
+- id: '1585252232017'
+  alias: Ouvre porte de garage (via IOS)
+  description: ''
+  trigger:
+  - event_data:
+      actionName: ouvre_garage
+    event_type: ''
+    platform: event
+  condition:
+  - below: '1'
+    condition: numeric_state
+    entity_id: proximity.home
+  action:
+  - data: {}
+    entity_id: cover.porte_de_garage
+    service: cover.open_cover
+- id: '1585252456499'
+  alias: Ferme porte de garage (via IOS)
+  description: ''
+  trigger:
+  - event_data: {}
+    event_type: ''
+    platform: event
+  condition: []
+  action:
+  - data: {}
+    entity_id: cover.porte_de_garage
+    service: cover.close_cover
+- id: '1594573273139'
+  alias: Notifie fin de téléchargement
+  description: ''
+  trigger:
+  - platform: webhook
+    webhook_id: eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiIzMDQxMjY1NDZiNDI0MTYxOWFmODkzMGFmNDZmYjdhMCIsImlhdCI6MTU5NDU3MjQ3MiwiZXhwIjoxOTA5OTMyNDcyfQ.hOSe9z-9dltAssDuVUu4aiWu-gd57pgnSagJCY_Q_og
+  condition: []
+  action:
+  - data_template:
+      data:
+        push:
+          thread-id: deluge-notification-group
+        subtitle: '{{ trigger.json.subtitle }}'
+      message: '{{ trigger.json.title }}'
+      title: DELUGE
+    service: notify.mobile_app_iphone_xs_de_eric
+  mode: single

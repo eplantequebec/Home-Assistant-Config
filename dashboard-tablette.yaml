@@ -1,0 +1,180 @@
+title: Home Assistant
+views:
+  - theme: tablette
+    badges: []
+    cards:
+      - type: horizontal-stack
+        cards:
+          - type: vertical-stack
+            cards: 
+              - type: horizontal-stack
+                cards:
+                - entity: binary_sensor.safe_departure
+                  hold_action:
+                    action: call-service
+                    service: script.depart
+                  icon: 'mdi:exit-run'
+                  icon_height: 160px
+                  show_icon: true
+                  show_name: true
+                  state_color: false
+                  style: |
+                    ha-card {
+                      color: {% if is_state('binary_sensor.safe_departure', 'on') %} white {% else %} red {% endif %};
+                    }
+                    ha-icon {
+                      color: {% if is_state('binary_sensor.safe_departure', 'on') %} lightgreen {% else %} red {% endif %} !important; 
+                    }
+                  tap_action:
+                    action: none
+                  type: button
+                  name: "Préparer le départ"           
+
+                - type: conditional
+                  conditions:
+                    - entity: binary_sensor.safe_departure
+                      state: 'off'
+                  card:
+                    type: 'custom:config-template-card'
+                    variables:
+                      - states['binary_sensor.porte_patio'].state
+                      - states['binary_sensor.porte_arriere'].state
+                    entities:
+                      - entity: binary_sensor.porte_patio
+                      - entity: binary_sensor.porte_arriere
+                    card:
+                      type: entities
+                      entities:
+                        - entity: binary_sensor.porte_patio
+                          name: "${vars[0] === 'on' ? 'PORTE AVANT:' : 'Porte avant:'}"
+                        - entity: binary_sensor.porte_arriere
+                          name: "${vars[1] === 'on' ? 'PORTE ARRIÈRE:' : 'Porte arrière:'}"
+
+              - entity: cover.porte_de_garage
+                hold_action:
+                  action: toggle
+                icon_height: 160px
+                show_icon: true
+                show_name: true
+                tap_action:
+                  action: more-info
+                type: button
+            
+          - cards:
+              - cards:
+                  - entity: sensor.temperature_bureau
+                    graph: line
+                    icon: 'hass:thermometer'
+                    name: Bureau
+                    type: sensor
+                  - entity: sensor.senseur_chambre_temperature
+                    graph: line
+                    icon: 'hass:thermometer'
+                    name: Chambre
+                    type: sensor
+                type: horizontal-stack
+              - cards:
+                  - entity: sensor.temperature_bureau
+                    graph: line
+                    icon: 'hass:thermometer'
+                    name: Bureau
+                    type: sensor
+                  - entity: sensor.senseur_chambre_temperature
+                    graph: line
+                    icon: 'hass:thermometer'
+                    name: Chambre
+                    type: sensor
+                type: horizontal-stack
+              - entity: weather.openweathermap
+                name: MÉTÉO
+                secondary_info_attribute: sensor.high_temperature
+                type: weather-forecast
+            type: vertical-stack
+        
+    icon: 'mdi:home-assistant'
+    panel: true
+    path: maison
+    title: Maison
+    visible:
+      - user: 441c643421dd49a8b272da36aa0fe627
+      - user: f5502c6fe2144b1b8290250806f36f6d
+  - theme: tablette
+    badges: []
+    cards:
+      - entities:
+          - entity: light.lumiere_bureau_principale
+            name: Lumière principale
+          - entity: light.lumiere_bureau_julie
+            name: Lumière de Julie
+        title: Bureau
+        type: entities
+      - entities:
+          - entity: light.lit_deric
+          - entity: light.chambre_principal
+          - entity: light.garderobe
+          - entity: binary_sensor.porte_arriere
+        title: Chambre
+        type: entities
+      - entities:
+          - entity: light.comptoir_four
+          - entity: light.comptoir_evier
+          - entity: light.cuisiniere
+          - entity: light.lumiere_salle_a_manger
+          - entity: binary_sensor.porte_patio
+          - entity: binary_sensor.porte_patio_mousticaire
+        title: Cuisine
+        type: entities
+      - entities:
+          - entity: light.lumiere_tv
+          - entity: binary_sensor.porte_entree
+        title: Salon
+        type: entities
+      - entities:
+          - entity: light.lumiere_toilette_cabinet
+          - entity: light.lumiere_toilette_principale
+        title: Toilette
+        type: entities
+    path: entites
+    title: Portes et fenêtres
+  - theme: tablette
+    badges: []
+    cards:
+      - cards:
+          - cards:
+              - entity: climate.thermostat_salon
+                name: Salon
+                theme: default
+                type: thermostat
+              - entity: climate.thermostat_bureau
+                name: Bureau
+                theme: default
+                type: thermostat
+              - entity: climate.thermostat_toilette
+                name: Toilette
+                theme: default
+                type: thermostat
+            type: horizontal-stack
+          - entities:
+              - entity: sensor.temperature_cuisine
+                name: Cuisine
+              - entity: sensor.temperature_chambre
+                name: Chambre
+              - entity: sensor.temperature_bureau
+                name: Bureau
+              - entity: sensor.temperature_salon
+                name: Salon
+              - entity: sensor.temperature_toilette
+                name: Toilette
+              - entity: sensor.humidite_cuisine
+                name: Cuisine
+              - entity: sensor.humidite_chambre
+                name: Chambre
+            hours_to_show: 24
+            refresh_interval: 0
+            title: Température / Humidité  des pièces
+            type: history-graph
+        type: vertical-stack
+    icon: ''
+    panel: true
+    path: temperatures
+    title: Thermostats
