@@ -133,6 +133,7 @@ Produit du Québec que j'ai acheté il y a 5 ans.  Le hub a une intégration HA 
 
 ### Sonoff - Contrôleur pour ventilateur de plafond
 ![enter image description here](https://raw.githubusercontent.com/eplantequebec/readme-images/master/sonoffFan.png)
+
 Lorsque j'ai acheté mes deux ventilateur de plafond, je voulais un système controlable via un iPhone.  Ça fonctionnait correctement, mais lorsque j'ai eu mon Google Home, la première chose que je voulais controller avec celui-ci était mes ventilateurs.  J'ai acheté un Sonoff iFan2.  Malheureusement, quelques semaines après je decouvrait Home Assistant et celui-ci n'était pas intégrable à celui-ci. 
 
 La plupart des modules Sonoff ont la particularité de pouvoir changer le Firmware et d'installer un firmware opensource développé pour les modules ESP8266.  Pendant longtemps, des compétence en soudure étaient requises pour changer se Firmware.  Il y a eu aussi certain modules qui pouvaient être changer via Wifi (OTA), mais c'était complexe et j'ai finalement laissé tombé après avoir essayé une fois.
