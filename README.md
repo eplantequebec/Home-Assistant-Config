@@ -38,7 +38,8 @@ Ces petites prises sont superbes. Facile d'intégration via l'interface de HA, e
 
 ### Withings
 
-* 2 x Sleep (Capteur de sommeil).
+* 2 x Sleep (Capteur de sommeil)
+![enter image description here](https://raw.githubusercontent.com/eplantequebec/readme-images/master/withingsSleep.png)
 
 Bien avant d'avoir mon 1er Google Home Mini, j'avais déjà ces deux produits en possession. Il n'y a pas d'intégration possible avec HA directement, mais j'ai trouvé amusant de connecté ceux-ci à IFTTT, puis d'envoyer un Webhook à HA à chaque levé ou couché du lit. J'ai ainsi deux entités (boolean) dans HA qui détermine si je suis couché ou non. Ainsi l'alarme ne part que si je suis au lit et si elle démarre, elle se ferme dès que je me lève! :)
 
@@ -123,10 +124,15 @@ L'application IOS indispensable!
 ### Kevo Smart Lock
 Je n'ai pas rafolé de ce verrou.  Le déverrouillage prenait souvent plusieurs "touches" afin de s'executer.  Le Kevo plus doit être acheté à part ce qui fait monter la facture.  Et même avec ce module, l'intégration avec HA était pénible.  L'achat d'un verrou August fût une bénédiction.
 
-### Sinope Thermostat
-Produit du Québec que j'ai acheté il y a 5 ans.  Le hub a une intégration HA via HACS.  Fonctionne admirablement bien sauf pour un de mes convecteur.
+### August
+Facile à intégrer dans HA, Il est Z-Wave et se déverouille dès qu'on approche de la maison.  C'est un coup de coeur.  Beaucoup plus efficace que Kevo.
 
-### Contrôleur de ventilateur
+### Sinope Thermostat
+![enter image description here](https://raw.githubusercontent.com/eplantequebec/readme-images/master/Sinope.png)
+Produit du Québec que j'ai acheté il y a 5 ans.  Le hub a une intégration HA via HACS.  Fonctionne admirablement bien sauf pour un convecteurs.
+
+### Sonoff - Contrôleur pour ventilateur de plafond
+![enter image description here](https://raw.githubusercontent.com/eplantequebec/readme-images/master/sonoffFan.png)
 Lorsque j'ai acheté mes deux ventilateur de plafond, je voulais un système controlable via un iPhone.  Ça fonctionnait correctement, mais lorsque j'ai eu mon Google Home, la première chose que je voulais controller avec celui-ci était mes ventilateurs.  J'ai acheté un Sonoff iFan2.  Malheureusement, quelques semaines après je decouvrait Home Assistant et celui-ci n'était pas intégrable à celui-ci. 
 
 La plupart des modules Sonoff ont la particularité de pouvoir changer le Firmware et d'installer un firmware opensource développé pour les modules ESP8266.  Pendant longtemps, des compétence en soudure étaient requises pour changer se Firmware.  Il y a eu aussi certain modules qui pouvaient être changer via Wifi (OTA), mais c'était complexe et j'ai finalement laissé tombé après avoir essayé une fois.
