@@ -48,6 +48,7 @@ Bien avant d'avoir mon 1er Google Home Mini, j'avais déjà ces deux produits en
 * Roborock Vaccum
 
 ![enter image description here](https://raw.githubusercontent.com/eplantequebec/readme-images/master/XiaomiVacuum.png)
+
 L'intégration à HA se fait via l'édition du fichier de configuration. Le plus difficile est de rapatrier le Token requis pour communiquer avec les serveurs de Xiaomi.
 
 ### MyQ
@@ -129,6 +130,7 @@ Facile à intégrer dans HA, Il est Z-Wave et se déverouille dès qu'on approch
 
 ### Sinope Thermostat
 ![enter image description here](https://raw.githubusercontent.com/eplantequebec/readme-images/master/Sinope.png)
+
 Produit du Québec que j'ai acheté il y a 5 ans.  Le hub a une intégration HA via HACS.  Fonctionne admirablement bien sauf pour un convecteurs.
 
 ### Sonoff - Contrôleur pour ventilateur de plafond
