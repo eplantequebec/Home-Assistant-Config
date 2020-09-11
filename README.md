@@ -11,17 +11,22 @@ Mon HA a jusqu'en juillet 2019 roulé sur Raspberry Pi 3 Model A+ (1.4GHz 64bit 
 
 Puis en août 2019, j'ai déplacé le HA sur mon NAS (Asustor AS5104T, Intel Celeron @ 2GHz, 4Gb RAM) à l'intérieur d'un container Docker. Lorsque l'on installe HA sur autre chose que sur un Raspberry avec HASSIO, il faut savoir que l'on perd certaines fonctionnalités disponibles par l'interface graphique (mise à jour, add-on, etc.) Des étapes plus manuelles via la ligne de commande seront alors nécessaires. Je suggère que vous passiez par un Rasberry pour vous familiariser avec les configurations du HA. D'ailleurs, une de mes prochaines étapes est d'installé une clé USB Z-Wave à HA pour éliminer la nécessité du chez-soi Smarthings que j'utilise pour mes appareils Z-Wave. Je ne sais pas encore si ça sera possible.
 
+** UPDATE **
+En mai 2020, je suis retourné sur un Raspberry PI 4, mais en laissant la BD sur le NAS.  J'ai utilisé une carte SD plus adapté aux application (SanDisk Extreme Pro MicroSDXC UHS-I U3 A2 V30 64GB) et jusqu'à présent tout fonctionnement bien.
+
 ### Philips Hue
 
-* 1 x Color Lightstrip dans la chambre à coucher
+* 2 x Color Lightstrip dans la chambre à coucher
 * 1 x Color Candle Hub E14 dans la chambre à coucher
-* 1 x White GU10 dans la cuisine
+* 1 x White A19 pour un garde-robe
+* 2 x White GU10 dans la cuisine
 * 1 x Hue Motion Sensor
 * 1 x Hue Dimmer switch
 * 1 x Hue Bridge
+* 1 x Hue Button
 
 Les lumières et le détecteur de mouvements sont intégrés à HA avec le module d'intégration standard.
-La Hue Dimmer switch ne peut être utilisé par HA.
+La Hue Dimmer switch et le Hue Button ne peuvent être utilisé par HA.
 
 
 ### TP-Link
@@ -41,6 +46,7 @@ Bien avant d'avoir mon 1er Google Home Mini, j'avais déjà ces deux produits en
 
 * Roborock Vaccum
 
+![enter image description here](https://raw.githubusercontent.com/eplantequebec/readme-images/master/XiaomiVacuum.png)
 L'intégration à HA se fait via l'édition du fichier de configuration. Le plus difficile est de rapatrier le Token requis pour communiquer avec les serveurs de Xiaomi.
 
 ### MyQ
@@ -75,7 +81,7 @@ Le Hub Harmony s'intègre très bien avec HA. Par contre, il a deux gros défaut
 
 En fait c'est deux fois le même produit.  Un est sûrement un "rebranding" de l'autre produit.  Quoi qu'il en soit, le produit fonctionne très bien.  Le tout est en Wifi.  Après avoir ajouté les adresses IP dans la configuration de HA, celui-ci communique efficacement directement avec l'appareil, sans passer par le cloud.
 
-### Smarthings 
+### SmartThings 
 
 1 x Hub SmathThings
 3 x SmartThings Button 
@@ -83,6 +89,13 @@ En fait c'est deux fois le même produit.  Un est sûrement un "rebranding" de l
 J'ai aussi essayé Vera et Wink, mais j'ai finalement opté pour le SmartThings, parce que c'était le moins pire. Il sert surtout pour les composantes qui sont Z-Wave, ZigBee (éventuellement) ou tout autre appareil qui seraient compatibles SmarthThings, mais pas HA directement. J'espère un jour bancher un concentrateur Z-Wave directement sur HA via le USB, mais maintenant que celui-ci fonctionne sur mon NAS, ça pourrait être difficile, voir impossible. Sinon, j'aimerais bien redonner une chance au hub Vera. Celui-ci fonctionne localement pour le contrôle des appareils.
 
 Les bouton SmartThings, sont très utiles.  Ils ont trois statut qu'ils envoie au hub de Samsung et qui sont ensuite relayé à HA.  Un clique, un double-clique ou un longue-pression peut-être alors identifier dans HA lors de la configuration d'un déclancher dans une automation.
+
+** UPDATE **
+J'ai abandonné SmartThings au profit de Vera.  Puisque les boutons étaient compatible seulement avec SmartThings, j'ai dû abandonné ceux-ci.  De toute façon, ils commençaient à agacé grandement la conjointe, car ceux-ci perdaient souvent la communication avec le HUB.
+
+### VERA
+
+Au début de ma découverte de HA, j'ai essayé 3 hubs (SmartThings, Vera et Wink).  Je n'ai pas aimé Wink et mon préféré fût SmartThings.  Afin de diminuer ma dépendance au cloud, j'ai décidé en décembre 2019 de refaire un essai avec Vera.   Celui-ci est donc maintenant utilisé pour mes device Z-Wave et jusqu'à présent tout va bien.  
 
 ### Broadlink
 
@@ -93,14 +106,32 @@ J'adore les Broadlink RM Mini 3. HA peut envoyer pratiquement n'importe quel cod
 
 Les deux Broadlink A1 me servent surtout pour comme hygromètre. Il est aussi utilisable pour la température. Par contre, pour la qualité de l'air, le senseur de mouvement et de niveau sonore, il est trop peu précis pour être utilisé. De toute façon le produit est discontinué. Si vous avez besoin simplement d'un thermomètre, vous pouvez utiliser les SmarthThings Button qui ont un senseur intégré. 
 
-### 
-Prise électrique Enerwave (Z-Wave)
+### Prise électrique Enerwave (Z-Wave)
 
 https://www.amazon.ca/Enerwave-ZW15RM-PLUS-App-Controlled-Automation-Interchangeable/dp/B07991PBH9
 
 ### EventGhost
-### IFTTT
+Pour controler l'ordinateur via des Webhook.   Ce qui permet à HA d'appeller ce logiciel pour qu'il (exemple) ferme l'écran ou le son la nuit.
 
+### IFTTT
+Ce service est un service de dernier recours pour HA.  Je l'utilise principalement pour déclencher des scripts HA suite à une commande vocale à Google.  Exemple, la commande vocale "Ok Google, prépare le dodo." execute un script HA qui éteint tout dans la maison et prépare le dodo.
+
+### Home Assistant Companion.
+L'application IOS indispensable! 
+
+
+### Kevo Smart Lock
+Je n'ai pas rafolé de ce verrou.  Le déverrouillage prenait souvent plusieurs "touches" afin de s'executer.  Le Kevo plus doit être acheté à part ce qui fait monter la facture.  Et même avec ce module, l'intégration avec HA était pénible.  L'achat d'un verrou August fût une bénédiction.
+
+### Sinope Thermostat
+Produit du Québec que j'ai acheté il y a 5 ans.  Le hub a une intégration HA via HACS.  Fonctionne admirablement bien sauf pour un de mes convecteur.
+
+### Contrôleur de ventilateur
+Lorsque j'ai acheté mes deux ventilateur de plafond, je voulais un système controlable via un iPhone.  Ça fonctionnait correctement, mais lorsque j'ai eu mon Google Home, la première chose que je voulais controller avec celui-ci était mes ventilateurs.  J'ai acheté un Sonoff iFan2.  Malheureusement, quelques semaines après je decouvrait Home Assistant et celui-ci n'était pas intégrable à celui-ci. 
+
+La plupart des modules Sonoff ont la particularité de pouvoir changer le Firmware et d'installer un firmware opensource développé pour les modules ESP8266.  Pendant longtemps, des compétence en soudure étaient requises pour changer se Firmware.  Il y a eu aussi certain modules qui pouvaient être changer via Wifi (OTA), mais c'était complexe et j'ai finalement laissé tombé après avoir essayé une fois.
+
+Mais en juillet 2020, je découvrait l'intégration d'AlexxIT via un vidéo de DrZzs.   Le module disponible via HACS fonctionne à merveille et permet non seulement l'intégration de la plupart des modules Sonoff, mais permets à HA de communiquer localement avec ces modules.  Plus de cloud.
 
 
 
