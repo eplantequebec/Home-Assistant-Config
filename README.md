@@ -14,7 +14,7 @@ Puis en août 2019, j'ai déplacé le HA sur mon NAS (Asustor AS5104T, Intel Cel
 ** UPDATE **
 En mai 2020, je suis retourné sur un Raspberry PI 4, mais en laissant la BD sur le NAS.  J'ai utilisé une carte SD plus adapté aux application (SanDisk Extreme Pro MicroSDXC UHS-I U3 A2 V30 64GB) et jusqu'à présent tout fonctionnement bien.
 
-### Philips Hue
+### Philips Hue (https://www.philips-hue.com/)
 
 * 2 x Color Lightstrip dans la chambre à coucher
 * 1 x Color Candle Hub E14 dans la chambre à coucher
