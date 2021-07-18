@@ -29,19 +29,22 @@ Les lumières et le détecteur de mouvements sont intégrés à HA avec le modul
 La Hue Dimmer switch et le Hue Button ne peuvent être utilisé par HA.
 
 
-### TP-Link
+### TP-Link (https://www.tp-link.com/fr-ca/home-networking/smart-plug/)
 
 * 1 x HS110
 * 4 x HS105
 
 Ces petites prises sont superbes. Facile d'intégration via l'interface de HA, elles sont rapides puisqu'elle sont accédées sans passer par le cloud. Et bien abordables. Les prises HS105 me permettent d'allumer et de fermer mon ordi, deux lumières et un Lectrofan (oui, une machine a bruit!). La prise HS110 offre aussi du "power monitoring". Attachée à un air climatisé, elle m'indique si l'air climatisé est en fonction. Ceci, même si quelqu'un a fermé celui-ci directement ou via à manette.
 
-### Withings
+### Withings (https://www.withings.com/)
 
 * 2 x Sleep (Capteur de sommeil)
 ![enter image description here](https://raw.githubusercontent.com/eplantequebec/readme-images/master/withingsSleep.png)
 
 Bien avant d'avoir mon 1er Google Home Mini, j'avais déjà ces deux produits en possession. Il n'y a pas d'intégration possible avec HA directement, mais j'ai trouvé amusant de connecté ceux-ci à IFTTT, puis d'envoyer un Webhook à HA à chaque levé ou couché du lit. J'ai ainsi deux entités (boolean) dans HA qui détermine si je suis couché ou non. Ainsi l'alarme ne part que si je suis au lit et si elle démarre, elle se ferme dès que je me lève! :)
+
+*** UPDATE ***
+Puisque maintenant IFTTT n'autorise que 3, je ne l'utilise plus.  Je cherche donc une façon de détecter ma présence au lit.
 
 ### Xiaomi
 
@@ -51,13 +54,16 @@ Bien avant d'avoir mon 1er Google Home Mini, j'avais déjà ces deux produits en
 
 L'intégration à HA se fait via l'édition du fichier de configuration. Le plus difficile est de rapatrier le Token requis pour communiquer avec les serveurs de Xiaomi.
 
+* Xiomi Boutons
+https://fr.aliexpress.com/item/32824750261.html?albpd=en32824750261&acnt=708-803-3821&aff_platform=aaf&albpg=743612850714&netw=u&albcp=7386552844&sk=UneMJZVf&trgt=743612850714&terminal_id=96fb4c02a36244ec8551b4a63271ce2d&tmLog=new_Detail&needSmbHouyi=false&albbt=Google_7_shopping&src=google&crea=en32824750261&aff_fcid=4467bb12100241c8983b60a78c8b6270-1626651562999-08717-UneMJZVf&gclid=CjwKCAjwos-HBhB3EiwAe4xM9yy0WejzgaaPungtuXAUqBAlJug35i0e1OCe7sTs8yVbkbwYZgkykxoCbLUQAvD_BwE&albag=80241711349&aff_fsk=UneMJZVf&albch=shopping&albagn=888888&isSmbAutoCall=false&aff_trace_key=4467bb12100241c8983b60a78c8b6270-1626651562999-08717-UneMJZVf&device=c&gclsrc=aw.ds
+
 ### MyQ
 
 * Contrôleur de porte de Garage MyQ (MYQ-G0201C)
 
 L'intégration à HA se fait via l'édition du fichier de configuration, simplement en indiquant les informations nécessaires pour se connecter au cloud de MyQ. J'ai essayé à l'époque le très prometteur Garadget (https://www.garadget.com), mais à l'époque il était incompatible avec les Chamberlain. Je crois qu'ils ont réglé le problème maintenant. De toute façon, les deux utilisent le cloud.
 
-### Aoetec 
+### Aoetec (https://aeotec.com/)
 
 * 1 x Nano Dual Switch ZW132 (with power monitoring)
 * 1 x Nano Dual Switch ZW139 (without power monitoring)
@@ -76,6 +82,9 @@ Le Sensor 6 pour la porte d'entrée fonctionne bien. Encore ici, le seul problè
 
 Le Hub Harmony s'intègre très bien avec HA. Par contre, il a deux gros défauts. Le prix et le fait que l'on doit passer par le cloud (comme la majorité des autres hubs d'ailleurs). Il est facile à configurer et l'ensemble des appareils avec l'ensemble des commandes seront importés dans HA. Si vous avez besoin plus d'un Hub, la facture grossira en conséquence. Je suggère plutôt les Broadband Mini IR, qui sont une fraction du prix.
 
+*** UPDATE ***
+Je me suis débarrasé de mon hub logitech.  Je préfère maintenant avoir des Broadlink IR Mini 3.  Ils sont très très moins cher et me permettent une plus grande souplesse.
+
 ### MagicLight Controler
 
 1 x SuperNight WiFi Wireless LED Smart Controller
@@ -92,12 +101,15 @@ J'ai aussi essayé Vera et Wink, mais j'ai finalement opté pour le SmartThings,
 
 Les bouton SmartThings, sont très utiles.  Ils ont trois statut qu'ils envoie au hub de Samsung et qui sont ensuite relayé à HA.  Un clique, un double-clique ou un longue-pression peut-être alors identifier dans HA lors de la configuration d'un déclancher dans une automation.
 
-** UPDATE **
+*** UPDATE ***
 J'ai abandonné SmartThings au profit de Vera.  Puisque les boutons étaient compatible seulement avec SmartThings, j'ai dû abandonné ceux-ci.  De toute façon, ils commençaient à agacé grandement la conjointe, car ceux-ci perdaient souvent la communication avec le HUB.
 
 ### VERA
 
 Au début de ma découverte de HA, j'ai essayé 3 hubs (SmartThings, Vera et Wink).  Je n'ai pas aimé Wink et mon préféré fût SmartThings.  Afin de diminuer ma dépendance au cloud, j'ai décidé en décembre 2019 de refaire un essai avec Vera.   Celui-ci est donc maintenant utilisé pour mes device Z-Wave et jusqu'à présent tout va bien.  
+
+*** UPDATE ***
+J'ai aussi abandonnée le VERA.  Je gère maintenant directement le ZigBee et le Z-Wave à partir du Raspberry Pi.   Pour le Z-wave, j'utilise le Aeotec Z-Stick Gen5 Plus.  Pour le ZigBee, j'utilise le RASPBEE II ZigBee.
 
 ### Broadlink
 
@@ -106,7 +118,12 @@ Au début de ma découverte de HA, j'ai essayé 3 hubs (SmartThings, Vera et Win
 
 J'adore les Broadlink RM Mini 3. HA peut envoyer pratiquement n'importe quel code infrarouge et le champ d'action me semble plus grand que l'Harmony de Logitech. L'apprentissage est un peu ardu, puisque vous devez rapatrier le code pour chaque touche de la télécommande afin de les intégrer à HA. Mais le temps-réponse est superbe puisque tout est local. L'appareil s'alimente simplement par une prise USB. Et le coût est d'environ $30 CND. 
 
+L'apprentissage est maintenant grandement simplifié dans Home Assistant.  Celui-ci permet maintenant l'apprentissage dans Home Assistant.
+
 Les deux Broadlink A1 me servent surtout pour comme hygromètre. Il est aussi utilisable pour la température. Par contre, pour la qualité de l'air, le senseur de mouvement et de niveau sonore, il est trop peu précis pour être utilisé. De toute façon le produit est discontinué. Si vous avez besoin simplement d'un thermomètre, vous pouvez utiliser les SmarthThings Button qui ont un senseur intégré. 
+
+*** UPDATE ***
+Je me suis débarrassé de ces éléments, ils sont un peu trop voyant.  J'ai mis des détecteurs d'humidité/température Sonoff.
 
 ### Prise électrique Enerwave (Z-Wave)
 
@@ -142,6 +159,9 @@ La plupart des modules Sonoff ont la particularité de pouvoir changer le Firmwa
 
 Mais en juillet 2020, je découvrait l'intégration d'AlexxIT via un vidéo de DrZzs.   Le module disponible via HACS fonctionne à merveille et permet non seulement l'intégration de la plupart des modules Sonoff, mais permets à HA de communiquer localement avec ces modules.  Plus de cloud.
 
+### Sonoff - Senseur
+
+J'ai intégré des senseurs de température et d'humidité Sonoff SNZB-02 qui me https://sonoff.tech/product/smart-home-security/snzb-02/.  Peu cher et efficace.  Ils me permettent de régler la vitesse des ventilateur de plafond en fonction de la température.
 
 
 <hr>
